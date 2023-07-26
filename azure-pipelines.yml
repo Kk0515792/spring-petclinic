@@ -9,14 +9,33 @@ trigger:
 pool:
   vmImage: 'ubuntu-22.04'
 
-steps:
-- task: Maven@3
+steps: 
+- task: SonarQubePrepare@5
   inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.17'
+    SonarQube: 'SonarQube Connection'
+    scannerMode: 'Other'
+- task: JavaToolInstaller@0
+  inputs:
+    versionSpec: '17'
     jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
+    jdkSourceOption: 'PreInstalled'
+- task: Maven@4
+  inputs:
+        mavenPomFile: 'pom.xml'
+        goals: 'install'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: true
+        sqMavenPluginVersionChoice: 'latest'
+- task: SonarQubePublish@5
+  inputs:
+            pollingTimeoutSec: '300'
+- task: PublishBuildArtifacts@1
+  inputs:
+                PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+                ArtifactName: 'drop'
+                publishLocation: 'Container'
