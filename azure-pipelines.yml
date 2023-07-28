@@ -18,7 +18,7 @@ steps:
       # Additional properties that will be passed to the scanner,
       # Put one key=value per line, example:
       # sonar.exclusions=**/*.bin
-      sonar.projectKey=Demo_Demo_AYmbKFMfumNYfjWYzELy
+      sonar.projectKey=Demo_AYmbKFMfumNYfjWYzELy
 - task: JavaToolInstaller@0
   inputs:
     versionSpec: '17'
