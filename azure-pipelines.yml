@@ -10,32 +10,19 @@ pool:
   vmImage: 'ubuntu-22.04'
 
 steps: 
-- task: SonarQubePrepare@5
-  inputs:
-    SonarQube: 'SonarQube Connection'
-    scannerMode: 'CLI'
-    extraProperties: |
-      # Additional properties that will be passed to the scanner,
-      # Put one key=value per line, example:
-      # sonar.exclusions=**/*.bin
-      sonar.projectKey=Demo_AYmbKFMfumNYfjWYzELy
-- task: JavaToolInstaller@0
-  inputs:
-    versionSpec: '17'
-    jdkArchitectureOption: 'x64'
-    jdkSourceOption: 'PreInstalled'
 - task: Maven@4
   inputs:
     mavenPomFile: 'pom.xml'
-    goals: 'package'
+    goals: 'clean package'
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     javaHomeOption: 'JDKVersion'
     mavenVersionOption: 'Default'
     mavenAuthenticateFeed: false
     effectivePomSkip: false
-    sonarQubeRunAnalysis: true
-
-- task: SonarQubePublish@5
+    sonarQubeRunAnalysis: false
+- task: PublishBuildArtifacts@1
   inputs:
-    pollingTimeoutSec: '300'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'Artifacts'
+    publishLocation: 'Container'
